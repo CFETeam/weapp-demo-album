@@ -1,0 +1,71 @@
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.album-container {
+    margin: 0.1rem 0;
+}
+
+.item-group {
+    display: flex;
+}
+
+.album-item {
+    flex: 1;
+    margin: 0.1rem;
+    background: #333;
+    text-align: center;
+    height: 6.66rem;
+    line-height: 6.66rem;
+}
+
+.album-item.empty {
+    background: transparent;
+}
+
+.upload-image {
+    color: #ccc;
+    background: #333;
+    position: absolute;
+    left: 0.1rem;
+    top: 0.2rem;
+    width: 6.46rem;
+    height: 6.66rem;
+    text-align: center;
+    line-height: 6.66rem;
+}
+
+.upload-image image {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2.6rem;
+    top: 1.2rem;
+}
+
+.upload-image text {
+    position: absolute;
+    width: 100%;
+    height: 2rem;
+    left: 0;
+    top: 1.6rem;
+}
+
+.swiper-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.swiper-container image {
+    width: 100%;
+    height: 100%;
+}
+
+action-sheet-item.warn {
+    color: #e64340;
+}

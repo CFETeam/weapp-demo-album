@@ -1,0 +1,34 @@
+<scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
+    <view class="album-container">
+        <view class="item-group" wx:for="{{layoutList}}" wx:for-item="group">
+            <block wx:for="{{group}}" wx:for-item="item">
+                <block wx:if="{{item}}">
+                    <image bindtap="enterPreviewMode" bindlongtap="showActions" data-src="{{item}}" class="album-item" src="{{item}}" mode="aspectFill"></image>
+                </block>
+                <block wx:else>
+                    <view class="album-item empty"></view>
+                </block>
+            </block>
+        </view>
+    </view>
+    <view class="upload-image" bindtap="chooseImage">
+        <image src="/images/camera.png" mode="aspectFit"></image>
+        <text>上传图片</text>
+    </view>
+</scroll-view>
+
+<swiper class="swiper-container" duration="400" current="{{previewIndex}}" bindtap="exitPreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
+  <block wx:for="{{albumList}}" wx:for-item="item">
+    <swiper-item>
+      <image src="{{item}}" mode="aspectFit"></image>
+    </swiper-item>
+  </block>
+</swiper>
+
+<action-sheet hidden="{{!showActionsSheet}}" bindchange="hideActionSheet">
+    <action-sheet-item bindtap="downloadImage">保存到本地</action-sheet-item>
+    <action-sheet-item class="warn" bindtap="deleteImage">删除图片</action-sheet-item>
+    <action-sheet-cancel class="cancel">取消</action-sheet-cancel>
+</action-sheet>
+
+<toast hidden="{{!showToast}}" duration="1000" bindchange="hideToast">{{toastMessage}}</toast>
