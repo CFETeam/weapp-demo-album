@@ -1,5 +1,5 @@
 const config = require('../../config.js');
-const util = require('../../lib/util.js');
+const { listToMatrix, always } = require('../../lib/util.js');
 const request = require('../../lib/request.js');
 const api = require('../../lib/api.js');
 
@@ -16,6 +16,12 @@ Page({
 
         // 触发了长按
         triggerLongTap: false,
+
+        // 是否显示loading
+        showLoading: false,
+
+        // loading提示语
+        loadingMessage: '',
 
         // 是否显示toast
         showToast: false,
@@ -36,20 +42,29 @@ Page({
         previewIndex: 0,
     },
 
+    // 显示loading提示
+    showLoading(loadingMessage) {
+        this.setData({ showLoading: true, loadingMessage });
+    },
+
+    // 隐藏loading提示
+    hideLoading() {
+        this.setData({ showLoading: false, loadingMessage: '' });
+    },
+
+    // 显示toast消息
+    showToast(toastMessage) {
+        this.setData({ showToast: true, toastMessage });
+    },
+
     // 隐藏toast消息
     hideToast() {
-        this.setData({
-            showToast: false,
-            toastMessage: '',
-        });
+        this.setData({ showToast: false, toastMessage: '' });
     },
 
     // 隐藏动作列表
     hideActionSheet() {
-        this.setData({
-            showActionsSheet: false,
-            imageInAction: '',
-        });
+        this.setData({ showActionsSheet: false, imageInAction: '' });
     },
 
     onLoad() {
@@ -61,21 +76,16 @@ Page({
                 return;
             }
 
-            this.setData({
-                'albumList': this.data.albumList.concat(resp.data),
-            });
-
+            this.setData({ 'albumList': this.data.albumList.concat(resp.data) });
             this.renderAlbumList();
         });
     },
 
     // 获取相册列表
     getAlbumList() {
-        let promise = request({
-            method: 'GET',
-            url: api.getUrl('/list'),
-        });
-        return promise;
+        this.showLoading('加载列表中…');
+        setTimeout(() => this.hideLoading(), 1000);
+        return request({ method: 'GET', url: api.getUrl('/list') });
     },
 
     // 渲染相册列表
@@ -84,7 +94,7 @@ Page({
         let layoutList = [];
 
         if (this.data.albumList.length) {
-            layoutList = util.listToMatrix([0].concat(this.data.albumList), layoutColumnSize);
+            layoutList = listToMatrix([0].concat(this.data.albumList), layoutColumnSize);
 
             let lastRow = layoutList[layoutList.length - 1];
             if (lastRow.length < layoutColumnSize) {
@@ -104,8 +114,7 @@ Page({
             sourceType: ['album', 'camera'],
 
             success: (res) => {
-                wx.showNavigationBarLoading();
-                wx.setNavigationBarTitle({ title: '正在上传图片…' });
+                this.showLoading('正在上传图片…');
 
                 console.log(api.getUrl('/upload'));
                 wx.uploadFile({
@@ -125,10 +134,7 @@ Page({
                             this.setData({ albumList });
                             this.renderAlbumList();
 
-                            this.setData({
-                                showToast: true,
-                                toastMessage: '图片上传成功',
-                            });
+                            this.showToast('图片上传成功');
                         } else {
                             console.log(response);
                         }
@@ -139,8 +145,7 @@ Page({
                     },
 
                     complete: () => {
-                        wx.hideNavigationBarLoading();
-                        wx.setNavigationBarTitle({ title: config.appTitle });
+                        this.hideLoading();
                     },
                 });
 
@@ -157,18 +162,12 @@ Page({
         let imageUrl = event.target.dataset.src;
         let previewIndex = this.data.albumList.indexOf(imageUrl);
 
-        this.setData({
-            previewMode: true,
-            previewIndex: previewIndex,
-        });
+        this.setData({ previewMode: true, previewIndex: previewIndex });
     },
 
     // 退出预览模式
-    exitPreviewMode() {
-        this.setData({
-            previewMode: false,
-            previewIndex: 0,
-        });
+    leavePreviewMode() {
+        this.setData({ previewMode: false, previewIndex: 0 });
     },
 
     // 显示可操作命令
@@ -178,14 +177,14 @@ Page({
             this.data.triggerLongTap = false;
         }, 1000);
 
-        this.setData({
-            showActionsSheet: true,
-            imageInAction: event.target.dataset.src,
-        });
+        this.setData({ showActionsSheet: true, imageInAction: event.target.dataset.src });
     },
 
     // 下载图片
     downloadImage() {
+        this.showLoading('正在保存图片…');
+        console.log('download_image_url', this.data.imageInAction);
+
         wx.downloadFile({
             url: this.data.imageInAction,
             type: 'image',
@@ -193,10 +192,7 @@ Page({
                 wx.saveFile({
                     tempFilePath: resp.tempFilePath,
                     success: (resp) => {
-                        this.setData({
-                            showToast: true,
-                            toastMessage: '图片保存成功',
-                        });
+                        this.showToast('图片保存成功');
                     },
 
                     fail: (resp) => {
@@ -205,6 +201,7 @@ Page({
 
                     complete: (resp) => {
                         console.log('complete', resp);
+                        this.hideLoading();
                     },
                 });
             },
@@ -214,10 +211,7 @@ Page({
             },
         });
 
-        this.setData({
-            showActionsSheet: false,
-            imageInAction: '',
-        });
+        this.setData({ showActionsSheet: false, imageInAction: '' });
     },
 
     // 删除图片
@@ -225,13 +219,8 @@ Page({
         let imageUrl = this.data.imageInAction;
         let filepath = '/' + imageUrl.split('/').slice(3).join('/');
 
-        wx.showNavigationBarLoading();
-        wx.setNavigationBarTitle({ title: '正在删除图片…' });
-
-        this.setData({
-            showActionsSheet: false,
-            imageInAction: '',
-        });
+        this.showLoading('正在删除图片…');
+        this.setData({ showActionsSheet: false, imageInAction: '' });
 
         request({
             method: 'POST',
@@ -254,17 +243,13 @@ Page({
                 this.renderAlbumList();
             }
 
-            this.setData({
-                showToast: true,
-                toastMessage: '图片删除成功',
-            });
+            this.showToast('图片删除成功');
         })
         .catch(error => {
             console.log('failed', error);
         })
         .then(() => {
-            wx.hideNavigationBarLoading();
-            wx.setNavigationBarTitle({ title: config.appTitle });
+            this.hideLoading();
         });
     },
 });

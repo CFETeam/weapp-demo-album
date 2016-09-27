@@ -17,7 +17,7 @@
     </view>
 </scroll-view>
 
-<swiper class="swiper-container" duration="400" current="{{previewIndex}}" bindtap="exitPreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
+<swiper class="swiper-container" duration="400" current="{{previewIndex}}" bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
   <block wx:for="{{albumList}}" wx:for-item="item">
     <swiper-item>
       <image src="{{item}}" mode="aspectFit"></image>
@@ -31,4 +31,5 @@
     <action-sheet-cancel class="cancel">取消</action-sheet-cancel>
 </action-sheet>
 
+<loading hidden="{{!showLoading}}" bindchange="hideLoading">{{loadingMessage}}</loading>
 <toast hidden="{{!showToast}}" duration="1000" bindchange="hideToast">{{toastMessage}}</toast>
