@@ -2,8 +2,8 @@
 
 小相册是结合腾讯云[对象存储服务](https://www.qcloud.com/product/cos.html)（Cloud Object Service，简称COS）制作的一个微信小程序示例。在代码结构上包含如下两部分：
 
-- `applet`: 小相册应用包代码，可直接在微信开发者工具中作为项目打开
-- `server`: 搭建的Node服务端代码，作为服务器和`applet`通信，提供 CGI 接口示例用于拉取 COS 图片资源、上传图片到 COS、删除 COS 图片
+- `app`: 小相册应用包代码，可直接在微信开发者工具中作为项目打开
+- `server`: 搭建的Node服务端代码，作为服务器和`app`通信，提供 CGI 接口示例用于拉取 COS 图片资源、上传图片到 COS、删除 COS 图片
 
 小相册主要功能如下：
  * 列出 COS 服务器中的图片列表
@@ -86,7 +86,7 @@ nginx
 
 ### 6. 启动小相册示例 Node 服务
 
-在镜像中，小相册示例的 Node 服务代码已部署在目录`/data/release/qcloud-applet-album`下：
+在镜像中，小相册示例的 Node 服务代码已部署在目录 `/data/release/qcloud-applet-album` 下：
 
 进入该目录：
 
@@ -107,6 +107,12 @@ module.exports = {
     cosSecretKey: '填写密钥 SecretKey',
     cosFileBucket: '填写创建的公有读私有写的bucket名称',
 };
+```
+
+代码运行需要临时目录，在部署目录下创建一个临时目录 `tmp`。
+
+```sh
+mkdir tmp
 ```
 
 小相册示例使用`pm2`管理 Node 进程，执行以下命令启动 node 服务：
