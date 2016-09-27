@@ -40,7 +40,7 @@
 小相册服务要运行，需要进行以下几步：
 
 * 部署 Nginx，Nginx 的安装和部署请大家自行搜索（注意需要把 SSL 模块也编译进去）
-* 配置 Nginx 反向代理到 `http://127.0.0.1:9993` 
+* 配置 Nginx 反向代理到 `http://127.0.0.1:9993`
 * Node 运行环境，可以安装 [Node V6.6.0](https://nodejs.org/)
 * 部署 `server` 目录的代码到服务器上，如 `/data/release/qcloud-applet-album`
 * 使用 `npm install` 安装依赖模块
@@ -83,6 +83,7 @@ nginx
 - 开通 COS 服务分配得到唯一的`APP ID`
 - 使用密钥管理生成一对`SecretID`和`SecretKey`（用于调用 COS API）
 - 在 Bucket 列表中创建**公有读私有写**访问权限、**CDN加速**的 bucket（存储图片的目标容器）
+- 在创建的 bucket 容器中创建文件夹，命名为`photos`
 
 ### 6. 启动小相册示例 Node 服务
 
