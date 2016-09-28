@@ -83,7 +83,7 @@ nginx
 - 开通 COS 服务分配得到唯一的`APP ID`
 - 使用密钥管理生成一对`SecretID`和`SecretKey`（用于调用 COS API）
 - 在 Bucket 列表中创建**公有读私有写**访问权限、**CDN加速**的 bucket（存储图片的目标容器）
-- 在创建的 bucket 容器中创建文件夹，命名为`photos`
+- 在创建的 bucket 容器中创建文件夹，命名为`photos`，图片将会上传存储到该目录下
 
 ### 6. 启动小相册示例 Node 服务
 
@@ -116,7 +116,7 @@ module.exports = {
 mkdir tmp
 ```
 
-小相册示例使用`pm2`管理 Node 进程，执行以下命令启动 node 服务：
+小相册示例使用`pm2`管理 Node 进程，执行以下命令启动 Node 服务：
 
 ```bash
 pm2 start process.json
@@ -138,7 +138,7 @@ pm2 start process.json
 
 ![修改配置文件](http://easyimage-10028115.file.myqcloud.com/internal/nvqrghyi.pl4.jpg)
 
-然后点击调试即可打开小相册Demo开始体验。
+然后点击调试即可打开小相册 Demo 开始体验。
 
 ![调试](http://easyimage-10028115.file.myqcloud.com/internal/uo4m5gcd.tpr.jpg)
 
@@ -156,7 +156,7 @@ pm2 start process.json
 
 ### 下载和保存图片
 
-指定图片的访问地址，然后调用微信小程序提供的 `wx.downloadFile(OBJECT)` 和 `wx.saveFile(OBJECT)` 接口可以直接将图片下载和保存本地。这里要注意图片访问地址的域名需要和服务器配置的 dowmloadFile 合法域名一致，否则无法下载。
+指定图片的访问地址，然后调用微信小程序提供的 `wx.downloadFile(OBJECT)` 和 `wx.saveFile(OBJECT)` 接口可以直接将图片下载和保存本地。这里要注意图片访问地址的域名需要和服务器配置的 downloadFile 合法域名一致，否则无法下载。
 
 ### 删除图片
 
