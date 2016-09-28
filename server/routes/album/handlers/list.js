@@ -1,37 +1,36 @@
-const co = require('co');
-const PaintsBase = require('../base');
-const mongo = require('../../../libs/mongo');
+const _ = require('lodash');
+const path = require('path');
+const RouterBase = require('../../../common/routerbase');
+const config = require('../../../config');
+const cos = require('../../../services/cos');
 
-class ListPaints extends PaintsBase {
+class ListImages extends RouterBase {
     handle() {
-        const openId = this.openId;
+        const bucket = config.cosFileBucket;
+        const listPath = '/photos';
+        const listNum = 100;
+        const pattern = 'eListFileOnly';
+        const order = 1;
+        const context = '';
 
-        if (!openId) {
-            return this.fail({ 'reason': 'openId does not exists' });
-        }
-
-        co.wrap(function *() {
-            let db;
-
-            try {
-                db = yield mongo.connect();
-
-                let paints = db.collection('paints');
-
-                let query = { openId };
-                let projection = { _id: 0, openId: 0 };
-                let doc = yield paints.find(query, projection).sort({ _id: -1 }).toArray();
-
-                this.success(doc);
-
-            } catch (err) {
-                this.fail({ 'reason': err.message });
-            } finally {
-                db && db.close();
+        cos.list(bucket, listPath, listNum, pattern, order, context, (res) => {
+            if (res.code !== 0) {
+                this.res.json({ code: -1, msg: 'failed', data: {} });
+                return;
             }
 
-        }).call(this);
+            this.res.json({
+                code: 0,
+                msg: 'ok',
+                data: _.map(res.data.infos, 'access_url').filter(item => {
+                    let extname = String(path.extname(item)).toLowerCase();
+
+                    // 只返回`jpg/png`后缀图片
+                    return ['.jpg', '.png'].includes(extname);
+                }),
+            });
+        });
     }
 }
 
-module.exports = ListPaints.makeRouteHandler();
+module.exports = ListImages.makeRouteHandler();
