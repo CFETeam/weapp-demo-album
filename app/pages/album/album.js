@@ -14,9 +14,6 @@ Page({
         // 布局列数
         layoutColumnSize: 3,
 
-        // 触发了长按
-        triggerLongTap: false,
-
         // 是否显示loading
         showLoading: false,
 
@@ -155,7 +152,7 @@ Page({
 
     // 进入预览模式
     enterPreviewMode(event) {
-        if (this.data.triggerLongTap) {
+        if (this.data.showActionsSheet) {
             return;
         }
 
@@ -172,11 +169,6 @@ Page({
 
     // 显示可操作命令
     showActions(event) {
-        this.data.triggerLongTap = true;
-        setTimeout(() => {
-            this.data.triggerLongTap = false;
-        }, 1000);
-
         this.setData({ showActionsSheet: true, imageInAction: event.target.dataset.src });
     },
 
