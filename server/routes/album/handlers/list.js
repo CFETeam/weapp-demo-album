@@ -7,7 +7,7 @@ const cos = require('../../../services/cos');
 class ListImages extends RouterBase {
     handle() {
         const bucket = config.cosFileBucket;
-        const listPath = '/photos';
+        const listPath = config.cosUploadFolder;
         const listNum = 100;
         const pattern = 'eListFileOnly';
         const order = 1;

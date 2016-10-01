@@ -6,4 +6,5 @@ module.exports = {
     cosSecretId: 'COS_SECRET_ID',
     cosSecretKey: 'COS_SECRET_KEY',
     cosFileBucket: 'album',
+    cosUploadFolder: '/photos/',
 };

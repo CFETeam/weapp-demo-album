@@ -36,7 +36,8 @@ class ImageUploader extends RouterBase {
                 }
 
                 let srcpath = imageFile.path;
-                let destpath = `/photos/${Date.now()}-${shortid.generate()}.${resultType.ext}`;
+                let uploadFolder = (config.cosUploadFolder + '/').replace(/\/+$/, '/');
+                let destpath = `${uploadFolder}${Date.now()}-${shortid.generate()}.${resultType.ext}`;
 
                 return new Promise((resolve, reject) => {
                     cos.upload(srcpath, config.cosFileBucket, destpath, 0, (res) => {
