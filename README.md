@@ -46,7 +46,7 @@
 * 使用 `npm install` 安装依赖模块
 * 使用 `npm install pm2 -g` 安装 pm2
 
-> 上述环境配置比较麻烦，剪刀石头布的服务器运行代码和配置已经打包成[腾讯云 CVM 镜像](https://buy.qcloud.com/cvm?marketImgId=370)，推荐大家直接使用。
+> 上述环境配置比较麻烦，剪刀石头布的服务器运行代码和配置已经打包成[腾讯云 CVM 镜像](https://buy.qcloud.com/cvm?marketImgId=371)，推荐大家直接使用。
 > * 镜像部署完成之后，云主机上就有运行 WebSocket 服务的基本环境、代码和配置了。
 > * 腾讯云用户可以[免费领取礼包](https://www.qcloud.com/act/event/yingyonghao.html#section-voucher)，体验腾讯云小程序解决方案。
 > * 镜像已包含「剪刀石头布」和「小相册」两个小程序的服务器环境与代码，需要体验两个小程序的朋友无需重复部署
