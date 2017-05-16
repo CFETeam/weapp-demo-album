@@ -35,30 +35,35 @@ class ImageUploader extends RouterBase {
                     return;
                 }
 
-                let srcpath = imageFile.path;
-                let uploadFolder = (config.cosUploadFolder + '/').replace(/\/+$/, '/');
-                let destpath = `${uploadFolder}${Date.now()}-${shortid.generate()}.${resultType.ext}`;
+                const srcpath = imageFile.path
+                const imgKey = `${Date.now()}-${shortid.generate()}.${resultType.ext}`
+                const params = {
+                    Bucket: config.cosFileBucket,
+                    Region: config.cosRegion,
+                    Key: imgKey,
+                    Body: srcpath,
+                    ContentLength: imageFile.size
+                }
 
                 return new Promise((resolve, reject) => {
-                    cos.upload(srcpath, config.cosFileBucket, destpath, 0, (res) => {
-                        if (res.code === 0) {
-                            result.code = 0;
-                            result.msg = 'ok';
-                            result.data.imgUrl = res.data.access_url;
+                    cos.putObject(params, (err, data) => {
+                        if (err) reject(err)
 
-                            resolve();
-                        } else {
-                            reject();
-                        }
+                        console.log(data)
+                        result.code = 0
+                        result.msg = 'ok'
+                        result.data.imgUrl = config.cosDomain + imgKey
+                        resolve()
 
                         // remove uploaded file
-                        fs.unlink(srcpath);
+                        fs.unlink(srcpath)
 
                     });
                 });
 
             })
             .catch(e => {
+                console.log(e)
                 if (e.statusCode === 413) {
                     result.msg = `单个不超过${this.MAX_FILE_SIZE}MB`;
                 } else {
@@ -76,13 +81,13 @@ class ImageUploader extends RouterBase {
             maxFilesSize: this.MAX_FILE_SIZE * 1024 * 1024,
             autoFiles: true,
             uploadDir: path.join(global.SERVER_ROOT, 'tmp'),
-        });
+        })
 
         return new Promise((resolve, reject) => {
             form.parse(this.req, (err, fields = {}, files = {}) => {
-                return err ? reject(err) : resolve({ fields, files });
-            });
-        });
+                err ? reject(err) : resolve({ fields, files })
+            })
+        })
     }
 }
 

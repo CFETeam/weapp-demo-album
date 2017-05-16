@@ -22,15 +22,29 @@ class DeleteImage extends RouterBase {
             });
         }
 
-        cos.deleteFile(config.cosFileBucket, filePath, (res) => {
-            let success = (res.code === 0);
+        filePath = filePath.slice(1)
 
-            this.res.json({
-                code: (success ? 0 : -1),
-                msg: (success ? 'ok' : 'failed'),
-                data: {},
-            });
-        });
+        const params = {
+            Bucket: config.cosFileBucket,
+            Region: config.cosRegion,
+            Key: filePath
+        }
+
+        cos.deleteObject(params, (err, data) => {
+            if (err) {
+                this.res.json({
+                    code: -1,
+                    msg: 'failed',
+                    data: _.pick(err, ['name', 'message']),
+                })
+            } else {
+                this.res.json({
+                    code: 0,
+                    msg: 'ok',
+                    data: {},
+                })
+            }
+        })
     }
 }
 
