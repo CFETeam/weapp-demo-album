@@ -24,8 +24,6 @@ class DeleteImage extends RouterBase {
 
         filePath = filePath.slice(1)
 
-        console.log(filePath)
-
         const params = {
             Bucket: config.cosFileBucket,
             Region: config.cosRegion,
